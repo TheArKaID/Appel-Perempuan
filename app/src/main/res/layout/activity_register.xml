@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:textSize="20pt"
+        android:text="Daftar "/>
+
+    <!--<EditText-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="Nama"-->
+        <!--android:padding="5dp"-->
+        <!--android:layout_margin="20dp"-->
+        <!--android:background="@drawable/edittext"/>-->
+    <EditText
+        android:id="@+id/etemailregister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email"
+        android:padding="5dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/edittext"/>
+    <!--<EditText-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:hint="Username"-->
+        <!--android:padding="5dp"-->
+        <!--android:layout_margin="20dp"-->
+        <!--android:background="@drawable/edittext"/>-->
+    <EditText
+        android:id="@+id/etpasswordregister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/edittext"
+        android:hint="@string/password"
+        android:padding="5dp"
+        android:password="true" />
+    <Button
+        android:id="@+id/btnregister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/button"
+        android:padding="5dp"
+        android:text="@string/daftar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sudah_punya_akun"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"/>
+        <TextView
+            android:id="@+id/letlogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="5dp"/>
+    </LinearLayout>
+</LinearLayout>
