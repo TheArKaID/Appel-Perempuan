@@ -2,6 +2,7 @@ package id.thearka.appelperempuan;
 
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -35,6 +36,7 @@ public class Intro extends AppCompatActivity {
     PagerAdapter mPagerAdapter;
     int page = 0;   //  to track page position
     private ViewPager mViewPager;
+    SharedPreferences sharedPreferences;
 
     public static Drawable tintMyDrawable(Drawable drawable, int color) {
         drawable = DrawableCompat.wrap(drawable);
@@ -48,6 +50,16 @@ public class Intro extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         Objects.requireNonNull(getSupportActionBar()).hide();
+
+        sharedPreferences = getApplicationContext().getSharedPreferences("id.thearka.appelperempuan", MODE_PRIVATE);
+        if(sharedPreferences.getBoolean("statusIntro", false)){
+
+            Intent intentSignIn = new Intent(Intro.this, LoginActivity.class);
+            intentSignIn.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intentSignIn);
+
+            return;
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
@@ -148,13 +160,20 @@ public class Intro extends AppCompatActivity {
         mSkipBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                mViewPager.setCurrentItem(2, true);
             }
         });
 
         mFinishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                editor.putBoolean("statusIntro", true);
+
+                editor.apply();
+
                 Intent toMain = new Intent(Intro.this, LoginActivity.class);
                 startActivity(toMain);
                 finish();

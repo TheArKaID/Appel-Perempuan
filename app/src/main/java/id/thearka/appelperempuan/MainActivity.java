@@ -130,9 +130,8 @@ public class MainActivity extends AppCompatActivity implements
 
         if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_login) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
+        } else if (id == R.id.nav_setting) {
+            //Setting
 //        } else if (id == R.id.nav_register) {
 //            Intent intent = new Intent(this, RegisterActivity.class);
 //            startActivity(intent);
