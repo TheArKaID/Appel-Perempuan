@@ -125,9 +125,9 @@ public class MainActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_login) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_register) {
-            Intent intent = new Intent(this, RegisterActivity.class);
-            startActivity(intent);
+//        } else if (id == R.id.nav_register) {
+//            Intent intent = new Intent(this, RegisterActivity.class);
+//            startActivity(intent);
 //        } else if (id == R.id.nav_tools) {
 
         } else if (id == R.id.nav_about) {

@@ -22,7 +22,7 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
-    Button back, login;
+    Button login;
     TextInputEditText etEmail, etPassword;
     TextView register;
     FirebaseAuth mAuth;
@@ -37,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        back = findViewById(R.id.loginBack);
         register = findViewById(R.id.letregister);
         login = findViewById(R.id.btnlogin);
         etEmail = findViewById(R.id.etemaillogin);
@@ -51,13 +50,6 @@ public class LoginActivity extends AppCompatActivity {
                 String password = Objects.requireNonNull(etPassword.getText()).toString();
 
                 prosesLogin(email, password);
-            }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
             }
         });
 

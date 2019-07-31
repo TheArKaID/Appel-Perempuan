@@ -155,7 +155,7 @@ public class Intro extends AppCompatActivity {
         mFinishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toMain = new Intent(Intro.this, MainActivity.class);
+                Intent toMain = new Intent(Intro.this, LoginActivity.class);
                 startActivity(toMain);
                 finish();
 

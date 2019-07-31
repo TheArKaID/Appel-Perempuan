@@ -39,4 +39,5 @@
     <string name="step3image">Step3Image</string>
     <string name="skip">Skip</string>
     <string name="section_format">Page %1$d</string>
+    <string name="logout">Logout</string>
 </resources>
