@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -57,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements
     LocationRequest locationRequest;
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
+    String userID;
+    DatabaseReference user;
+    MarkerOptions markerOptions = new MarkerOptions();
+
     boolean statusRequest;
     boolean logoutUser = false;
 
@@ -69,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        userID = firebaseUser.getUid();
+        user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
 
         statusRequest = false;
         CardView cvHelpRequest = findViewById(R.id.cvHelp);
@@ -210,6 +218,49 @@ public class MainActivity extends AppCompatActivity implements
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, mMap.getCameraPosition().zoom));
 
+        findHelplessPeople();
+    }
+    private void findHelplessPeople() {
+
+        GeoFire fire = new GeoFire(user);
+        GeoQuery geoQuery = fire.queryAtLocation(new GeoLocation(lastLocation.getLatitude(), lastLocation.getLongitude()), 1);
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+
+                LatLng latLng = new LatLng(location.latitude, location.longitude);
+                markerOptions.position(latLng);
+                markerOptions.title(key);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                currentLocationMarker = mMap.addMarker(markerOptions);
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+                currentLocationMarker.remove();
+                mMap.clear();
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                currentLocationMarker.remove();
+                LatLng latLng = new LatLng(location.latitude, location.longitude);
+                markerOptions.position(latLng);
+                markerOptions.title(key);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                currentLocationMarker = mMap.addMarker(markerOptions);
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -222,8 +273,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     void requestHelp(){
-        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
         GeoFire fire = new GeoFire(user);
         fire.setLocation(userID, new GeoLocation(lastLocation.getLatitude(), lastLocation.getLongitude()),
                 new GeoFire.CompletionListener() {
@@ -235,8 +284,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void cancellHelps() {
-        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
         GeoFire fire = new GeoFire(user);
         fire.removeLocation(userID,
                 new GeoFire.CompletionListener() {
