@@ -41,18 +41,6 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
 
-        sharedPreferences = getApplicationContext().getSharedPreferences("id.thearka.appelperempuan", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        if(sharedPreferences.getString("email", null)!=null && sharedPreferences.getString("password", null)!=null){
-            Email = sharedPreferences.getString("email", null);
-            Password = sharedPreferences.getString("password", null);
-
-            prosesLogin(Email, Password);
-            return;
-        }
-        editor.apply();
-
-
         register = findViewById(R.id.letregister);
         login = findViewById(R.id.btnlogin);
         etEmail = findViewById(R.id.etemaillogin);
