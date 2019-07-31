@@ -9,14 +9,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -31,6 +36,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -44,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements
     Marker currentLocationMarker;
     GoogleApiClient googleApiClient;
     LocationRequest locationRequest;
+    boolean statusRequest;
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
@@ -52,12 +62,27 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        statusRequest = false;
+        CardView cvHelpRequest = findViewById(R.id.cvHelp);
+        cvHelpRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!statusRequest){
+                    requestHelp();
+                    statusRequest = true;
+                } else{
+                    cancellHelps();
+                    statusRequest = false;
+                }
+
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragmentmap);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
-
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -166,14 +191,14 @@ public class MainActivity extends AppCompatActivity implements
 
         LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
 
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Posisi Anda");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
-        currentLocationMarker = mMap.addMarker(markerOptions);
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(latLng);
+//        markerOptions.title("Posisi Anda");
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+//        currentLocationMarker = mMap.addMarker(markerOptions);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, mMap.getCameraPosition().zoom));
+
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -183,5 +208,31 @@ public class MainActivity extends AppCompatActivity implements
                 .addApi(LocationServices.API)
                 .build();
         googleApiClient.connect();
+    }
+
+    void requestHelp(){
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
+        GeoFire fire = new GeoFire(user);
+        fire.setLocation(userID, new GeoLocation(lastLocation.getLatitude(), lastLocation.getLongitude()),
+                new GeoFire.CompletionListener() {
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        Toast.makeText(MainActivity.this, "Help Requested", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void cancellHelps() {
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
+        GeoFire fire = new GeoFire(user);
+        fire.removeLocation(userID,
+                new GeoFire.CompletionListener() {
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        Toast.makeText(MainActivity.this, "Help Cancelled", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
