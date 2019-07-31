@@ -32,4 +32,10 @@
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="sudah_punya_akun">Sudah punya akun ?</string>
+    <string name="finish">Finish</string>
+    <string name="next">Next</string>
+    <string name="step1image">Step1Image</string>
+    <string name="step2image">Step2Image</string>
+    <string name="step3image">Step3Image</string>
+    <string name="skip">Skip</string>
 </resources>
