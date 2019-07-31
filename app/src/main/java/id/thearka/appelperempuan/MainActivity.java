@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -126,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements
 
         mMap.setMyLocationEnabled(true);
         LatLng latLng = new LatLng(-7.8086832, 110.3189663);
-        mMap.addMarker(new MarkerOptions().position(latLng).title("Posisi Anda"));
 
         buildGoogleApiClient();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(5000);
+        locationRequest.setInterval(1000);
+        locationRequest.setFastestInterval(1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(this, "onConnectionFail "+connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
