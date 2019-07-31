@@ -2,6 +2,7 @@ package id.thearka.appelperempuan;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_about) {
 
         } else if (id == R.id.nav_exit) {
-
+            finishAndRemoveTask();
         } else if (id == R.id.nav_logout){
             logoutUser = true;
             cancellHelps();
@@ -257,6 +258,13 @@ public class MainActivity extends AppCompatActivity implements
 
     private void logout() {
         firebaseAuth.signOut();
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("id.thearka.appelperempuan", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("email", null);
+        editor.putString("password", null);
+
+        editor.apply();
 
         Intent intentLogout = new Intent(MainActivity.this, LoginActivity.class);
         intentLogout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
