@@ -38,4 +38,5 @@
     <string name="step2image">Step2Image</string>
     <string name="step3image">Step3Image</string>
     <string name="skip">Skip</string>
+    <string name="section_format">Page %1$d</string>
 </resources>
