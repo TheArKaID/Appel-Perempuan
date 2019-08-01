@@ -1,10 +1,14 @@
 package id.thearka.appelperempuan;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.location.Location;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,7 +22,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -32,7 +35,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,6 +46,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -67,6 +71,12 @@ public class MainActivity extends AppCompatActivity implements
     boolean logoutUser = false;
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private final String TAG = MainActivity.class.getSimpleName();
+
+    private MediaPlayer mPlayer = null;
+    AudioManager mAudioManager;
+    private boolean isReady;
+    private final static int MAX_VOLUME = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements
         userID = firebaseUser != null ? firebaseUser.getUid() : null;
         user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
 
+        mAudioManager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+        final int originalVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
         statusRequest = false;
         CardView cvHelpRequest = findViewById(R.id.cvHelp);
         cvHelpRequest.setOnClickListener(new View.OnClickListener() {
@@ -85,17 +98,24 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 if(lastLocation!=null){
                     if(!statusRequest){
+                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+                        mPlayer.prepareAsync();
                         requestHelp();
                         statusRequest = true;
+                        mPlayer.start();
+                        mPlayer.setLooping(true);
                     } else{
-                        cancellHelps();
-                        statusRequest = false;
+                        if (mPlayer.isPlaying() || isReady) {
+                            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+                            mPlayer.stop();
+                            isReady = false;
+                            cancellHelps();
+                            statusRequest = false;
+                        }
                     }
                 } else{
                     Toast.makeText(MainActivity.this, "Sedang Menemukan Lokasi Anda. Pastikan GPS Aktif!", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
@@ -107,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        initPlayer();
     }
 
     @Override
@@ -225,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements
 
         findHelplessPeople();
     }
+
     private void findHelplessPeople() {
 
         GeoFire fire = new GeoFire(user);
@@ -320,5 +342,29 @@ public class MainActivity extends AppCompatActivity implements
         Intent intentLogout = new Intent(MainActivity.this, LoginActivity.class);
         intentLogout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentLogout);
+    }
+
+    private void initPlayer() {
+        mPlayer = new MediaPlayer();
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        AssetFileDescriptor afd = getApplicationContext().getResources().openRawResourceFd(R.raw.alert2);
+        try {
+            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                isReady = true;
+                mPlayer.start();
+            }
+        });
+        mPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                return false;
+            }
+        });
     }
 }
