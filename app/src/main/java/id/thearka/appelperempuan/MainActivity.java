@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        userID = firebaseUser.getUid();
+        userID = firebaseUser != null ? firebaseUser.getUid() : null;
         user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
 
         statusRequest = false;
@@ -83,13 +83,18 @@ public class MainActivity extends AppCompatActivity implements
         cvHelpRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!statusRequest){
-                    requestHelp();
-                    statusRequest = true;
+                if(lastLocation!=null){
+                    if(!statusRequest){
+                        requestHelp();
+                        statusRequest = true;
+                    } else{
+                        cancellHelps();
+                        statusRequest = false;
+                    }
                 } else{
-                    cancellHelps();
-                    statusRequest = false;
+                    Toast.makeText(MainActivity.this, "Sedang Menemukan Lokasi Anda. Pastikan GPS Aktif!", Toast.LENGTH_SHORT).show();
                 }
+
 
             }
         });
