@@ -2,6 +2,7 @@ package id.thearka.appelperempuan;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ public class RegisterActivity extends AppCompatActivity {
     TextView login;
     EditText etEmail, etPassword, etNama;
     Button btnRegister;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     FirebaseAuth mAuth;
     DatabaseReference registrationRef;
     ProgressDialog progressDialog;
@@ -69,7 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void prosesLogin(String email, String password, final String nama) {
+    private void prosesLogin(final String email, final String password, final String nama) {
         if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)){
             Toast.makeText(this, "Email atau Password kosong", Toast.LENGTH_SHORT).show();
         } else{
@@ -81,7 +84,9 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                registrationRef.child(mAuth.getCurrentUser().getUid()).child("nama").child(nama).setValue(true);
+                                saveData(email, password);
+                                registrationRef.child(mAuth.getCurrentUser().getUid()).child("nama").setValue(nama);
+                                registrationRef.child(mAuth.getCurrentUser().getUid()).child("verification").setValue("unverified");
                                 Toast.makeText(RegisterActivity.this, "Pendaftaran Berhasil", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -92,6 +97,17 @@ public class RegisterActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                         }
                     });
+        }
+    }
+
+    private void saveData(String email, String password) {
+        sharedPreferences = getApplicationContext().getSharedPreferences("id.thearka.appelperempuan", MODE_PRIVATE);
+
+        if(sharedPreferences.getString("email", null)==null && sharedPreferences.getString("password", null)==null) {
+            editor = sharedPreferences.edit();
+            editor.putString("email", email);
+            editor.putString("password", password);
+            editor.apply();
         }
     }
 }
