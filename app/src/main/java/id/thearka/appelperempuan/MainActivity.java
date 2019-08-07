@@ -2,6 +2,7 @@ package id.thearka.appelperempuan;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
@@ -48,6 +50,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
 
     boolean statusRequest;
     boolean logoutUser = false;
-
+    NavigationView navigationView;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -126,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements
             mapFragment.getMapAsync(this);
         }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_home);
         navigationView.setNavigationItemSelectedListener(this);
         initPlayer();
     }
@@ -137,8 +141,32 @@ public class MainActivity extends AppCompatActivity implements
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            confirmOut("Keluar", "Anda akan keluar tanpa Log Out");
         }
+    }
+
+    private void confirmOut(final String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Ya",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(title.equals("Keluar")){
+                                    dialog.dismiss();
+                                    finishAndRemoveTask();
+                                    System.exit(0);
+                                } else{
+                                    dialog.dismiss();
+                                    logoutUser = true;
+                                    cancellHelps();
+                                    logout();
+                                }
+                            }
+                        })
+                .setNeutralButton("Batal", null);
+        builder.show();
     }
 
     @Override
@@ -147,39 +175,23 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+        if(id == Objects.requireNonNull(navigationView.getCheckedItem()).getItemId()){
+            return true;
+        }
         if (id == R.id.nav_home) {
             // Handle the camera action
         } else if (id == R.id.nav_setting) {
             //Setting
-//        } else if (id == R.id.nav_register) {
-//            Intent intent = new Intent(this, RegisterActivity.class);
-//            startActivity(intent);
-//        } else if (id == R.id.nav_tools) {
-
         } else if (id == R.id.nav_about) {
 
         } else if (id == R.id.nav_exit) {
-            finishAndRemoveTask();
+            confirmOut("Keluar", "Anda akan keluar tanpa Log Out");
         } else if (id == R.id.nav_logout){
-            logoutUser = true;
-            cancellHelps();
-            logout();
+            confirmOut("Logout", "Anda akan Log Out.");
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
