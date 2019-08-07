@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        hideSystemUI();
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -255,9 +256,15 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
 
+                Location targetLocation = new Location("");
+                targetLocation.setLatitude(location.latitude);
+                targetLocation.setLongitude(location.longitude);
+                float distance = lastLocation.distanceTo(targetLocation);
+                String[] jarak = Float.toString(distance).split("\\.");
                 LatLng latLng = new LatLng(location.latitude, location.longitude);
+
                 markerOptions.position(latLng);
-                markerOptions.title(key);
+                markerOptions.title(key+". Jarak = "+ jarak[0]+" Meter");
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                 currentLocationMarker = mMap.addMarker(markerOptions);
             }
@@ -366,5 +373,16 @@ public class MainActivity extends AppCompatActivity implements
                 return false;
             }
         });
+    }
+
+    private void hideSystemUI() {
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 }
