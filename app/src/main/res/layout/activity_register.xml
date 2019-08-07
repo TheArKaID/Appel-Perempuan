@@ -12,7 +12,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:textSize="20pt"
-        android:text="Daftar "/>
+        android:text="@string/daftar"/>
+
+    <EditText
+        android:id="@+id/etnama"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/edittext"
+        android:hint="@string/nama_lengkap"
+        android:padding="5dp"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/etemailregister"
@@ -20,17 +30,22 @@
         android:layout_height="wrap_content"
         android:hint="@string/email"
         android:padding="5dp"
+        android:maxLines="1"
         android:layout_margin="20dp"
-        android:background="@drawable/edittext"/>
+        android:background="@drawable/edittext"
+        android:inputType="text"/>
     <EditText
         android:id="@+id/etpasswordregister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:maxLines="1"
         android:background="@drawable/edittext"
         android:hint="@string/password"
         android:padding="5dp"
-        android:password="true" />
+        android:inputType="textPassword" />
+
+
     <Button
         android:id="@+id/btnregister"
         android:layout_width="match_parent"
@@ -55,7 +70,7 @@
             android:id="@+id/letlogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login"
+            android:text="@string/login"
             android:textColor="@color/colorPrimaryDark"
             android:layout_marginTop="20dp"
             android:layout_marginStart="5dp"/>

@@ -17,15 +17,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
     TextView login;
-    EditText etEmail, etPassword;
+    EditText etEmail, etPassword, etNama;
     Button btnRegister;
     FirebaseAuth mAuth;
+    DatabaseReference registrationRef;
     ProgressDialog progressDialog;
 
     @Override
@@ -37,8 +40,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         etEmail = findViewById(R.id.etemailregister);
         etPassword = findViewById(R.id.etpasswordregister);
+        etNama = findViewById(R.id.etnama);
         btnRegister = findViewById(R.id.btnregister);
         mAuth = FirebaseAuth.getInstance();
+        registrationRef = FirebaseDatabase.getInstance().getReference().child("Users");
         progressDialog = new ProgressDialog(this);
 
         login = findViewById(R.id.letlogin);
@@ -57,13 +62,14 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = Objects.requireNonNull(etEmail.getText()).toString();
                 String password = Objects.requireNonNull(etPassword.getText()).toString();
+                String nama = Objects.requireNonNull(etNama.getText()).toString();
 
-                prosesLogin(email, password);
+                prosesLogin(email, password, nama);
             }
         });
     }
 
-    private void prosesLogin(String email, String password) {
+    private void prosesLogin(String email, String password, final String nama) {
         if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)){
             Toast.makeText(this, "Email atau Password kosong", Toast.LENGTH_SHORT).show();
         } else{
@@ -75,7 +81,11 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
+                                registrationRef.child(mAuth.getCurrentUser().getUid()).child("nama").child(nama).setValue(true);
                                 Toast.makeText(RegisterActivity.this, "Pendaftaran Berhasil", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
                             } else{
                                 Toast.makeText(RegisterActivity.this, "Pendaftaran Gagal, Coba Lagi!", Toast.LENGTH_SHORT).show();
                             }

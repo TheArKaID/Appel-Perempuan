@@ -40,4 +40,5 @@
     <string name="skip">Skip</string>
     <string name="section_format">Page %1$d</string>
     <string name="logout">Logout</string>
+    <string name="nama_lengkap">Nama Lengkap</string>
 </resources>
