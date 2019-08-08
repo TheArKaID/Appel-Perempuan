@@ -41,4 +41,7 @@
     <string name="section_format">Page %1$d</string>
     <string name="logout">Logout</string>
     <string name="nama_lengkap">Nama Lengkap</string>
+    <string name="simpan">Simpan</string>
+    <string name="konfirmasi_password">Konfirmasi Password</string>
+    <string name="repassword">RePassword</string>
 </resources>
