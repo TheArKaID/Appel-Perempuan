@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == Objects.requireNonNull(navigationView.getCheckedItem()).getItemId()) {
             return true;
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void moveToSetting() {
         Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 9);
     }
 
     @Override
