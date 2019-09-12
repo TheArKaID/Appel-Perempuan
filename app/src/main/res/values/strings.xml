@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AppelPerempuan</string>
+    <string name="app_name">Women Protection System</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -27,7 +27,7 @@
     <string name="belum_punya_akun">Belum punya akun ?</string>
     <string name="daftar">Daftar</string>
     <string name="login">Login</string>
-    <string name="info_login">Silahkan Masuk ke Appel Perempuan</string>
+    <string name="info_login">Silahkan Masuk ke WPS</string>
     <string name="wellcome">Selamat Datang Kembali</string>
     <string name="password">Password</string>
     <string name="email">Email</string>

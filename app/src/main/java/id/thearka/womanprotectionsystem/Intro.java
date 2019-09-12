@@ -1,4 +1,4 @@
-package id.thearka.appelperempuan;
+package id.thearka.womanprotectionsystem;
 
 import android.animation.ArgbEvaluator;
 import android.app.ProgressDialog;
@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,7 +34,7 @@ public class Intro extends AppCompatActivity {
     static final String TAG = "PagerActivity";
     ImageButton mNextBtn;
     Button mSkipBtn, mFinishBtn;
-
+    TextView fpinfo;
     ImageView zero, one, two;
     ImageView[] indicators;
 
@@ -56,8 +57,6 @@ public class Intro extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intro);
-        Objects.requireNonNull(getSupportActionBar()).hide();
 
         sharedPreferences = getApplicationContext().getSharedPreferences("id.thearka.appelperempuan", MODE_PRIVATE);
         if(sharedPreferences.getBoolean("statusIntro", false)){
@@ -75,6 +74,11 @@ public class Intro extends AppCompatActivity {
                 startActivity(intentSignIn);
             }
         }
+
+        setContentView(R.layout.activity_intro);
+        Objects.requireNonNull(getSupportActionBar()).hide();
+
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
@@ -95,7 +99,7 @@ public class Intro extends AppCompatActivity {
 
         mSkipBtn = findViewById(R.id.intro_btn_skip);
         mFinishBtn = findViewById(R.id.intro_btn_finish);
-
+        fpinfo = findViewById(R.id.fpagerinfo);
         zero = findViewById(R.id.intro_indicator_0);
         one = findViewById(R.id.intro_indicator_1);
         two = findViewById(R.id.intro_indicator_2);
@@ -142,6 +146,7 @@ public class Intro extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         mViewPager.setBackgroundColor(color1);
+                        fpinfo.setText("Register Yourself");
                         break;
                     case 1:
                         mViewPager.setBackgroundColor(color2);

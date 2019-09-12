@@ -1,4 +1,4 @@
-package id.thearka.appelperempuan;
+package id.thearka.womanprotectionsystem;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
-import static id.thearka.appelperempuan.MainActivity.MY_PERMISSIONS_REQUEST_LOCATION;
+import static id.thearka.womanprotectionsystem.MainActivity.MY_PERMISSIONS_REQUEST_LOCATION;
 
 public class LoginActivity extends AppCompatActivity {
 
