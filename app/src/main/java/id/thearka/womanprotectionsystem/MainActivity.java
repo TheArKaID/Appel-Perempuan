@@ -110,9 +110,9 @@ public class MainActivity extends AppCompatActivity implements
                         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
                         mPlayer.prepareAsync();
                         requestHelp();
-                        statusRequest = true;
                         mPlayer.start();
                         mPlayer.setLooping(true);
+                        statusRequest = true;
                     } else {
                         if (mPlayer.isPlaying() || isReady) {
                             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
@@ -327,7 +327,8 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onKeyExited(String key) {
-                currentLocationMarker.remove();
+                if(currentLocationMarker!=null)
+                    currentLocationMarker.remove();
                 mMap.clear();
             }
 
@@ -374,14 +375,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void cancellHelps() {
-        GeoFire fire = new GeoFire(user);
-        fire.removeLocation(userID,
-                new GeoFire.CompletionListener() {
-                    @Override
-                    public void onComplete(String key, DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "Help Cancelled", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if(statusRequest){
+            GeoFire fire = new GeoFire(user);
+            fire.removeLocation(userID,
+                    new GeoFire.CompletionListener() {
+                        @Override
+                        public void onComplete(String key, DatabaseError error) {
+                            Toast.makeText(MainActivity.this, "Help Cancelled", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 
     @Override

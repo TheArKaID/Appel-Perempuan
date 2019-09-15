@@ -44,4 +44,7 @@
     <string name="simpan">Simpan</string>
     <string name="konfirmasi_password">Konfirmasi Password</string>
     <string name="repassword">RePassword</string>
+    <string name="news_information"><![CDATA[News & Information]]></string>
+    <string name="eduzone">Eduzone</string>
+    <string name="report">Report</string>
 </resources>
