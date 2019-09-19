@@ -54,23 +54,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
-        OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private final static int MAX_VOLUME = 1000;
     private final String TAG = MainActivity.class.getSimpleName();
-    GoogleMap mMap;
-    Location lastLocation;
-    Marker currentLocationMarker;
-    GoogleApiClient googleApiClient;
-    LocationRequest locationRequest;
-    FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
     String userID;
     DatabaseReference user;
     DatabaseReference userInfo;
@@ -97,67 +87,15 @@ public class MainActivity extends AppCompatActivity implements
 
         setCurrentUser();
 
-        mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-        final int originalVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-        statusRequest = false;
-        CardView cvHelpRequest = findViewById(R.id.cvHelp);
-        cvHelpRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lastLocation != null) {
-                    if (!statusRequest) {
-                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-                        mPlayer.prepareAsync();
-                        requestHelp();
-                        mPlayer.start();
-                        mPlayer.setLooping(true);
-                        statusRequest = true;
-                    } else {
-                        if (mPlayer.isPlaying() || isReady) {
-                            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
-                            mPlayer.stop();
-                            isReady = false;
-                            cancellHelps();
-                            statusRequest = false;
-                        }
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, "Sedang Menemukan Lokasi Anda. Pastikan GPS Aktif!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragmentmap);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentMain, new Home()).commit();
+            navigationView.setCheckedItem(R.id.nav_home);
         }
 
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_home);
-        navigationView.setNavigationItemSelectedListener(this);
-        initPlayer();
-    }
-
-    private void setCurrentUser() {
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View hView = navigationView.getHeaderView(0);
-        nav_nama = hView.findViewById(R.id.nav_header_nama);
-        TextView nav_email = hView.findViewById(R.id.nav_header_email);
-        userInfo.child(userID).child("nama").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                nav_nama.setText(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        nav_email.setText(firebaseUser.getEmail());
+//        Intent intent = new Intent(this, Home.class);
+//        startActivity(intent);
     }
 
     @Override
@@ -229,151 +167,6 @@ public class MainActivity extends AppCompatActivity implements
         startActivityForResult(intent, 9);
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-            return;
-        }
-
-        mMap.setMyLocationEnabled(true);
-        LatLng latLng = new LatLng(-7.8086832, 110.3189663);
-
-        buildGoogleApiClient();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        locationRequest = new LocationRequest();
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(1000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-            return;
-        }
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(this, "onConnectionFail " + connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        lastLocation = location;
-
-        if (currentLocationMarker != null)
-            currentLocationMarker.remove();
-
-        LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-
-//        MarkerOptions markerOptions = new MarkerOptions();
-//        markerOptions.position(latLng);
-//        markerOptions.title("Posisi Anda");
-//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-//        currentLocationMarker = mMap.addMarker(markerOptions);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, mMap.getCameraPosition().zoom));
-
-        findHelplessPeople();
-    }
-
-    private void findHelplessPeople() {
-
-        GeoFire fire = new GeoFire(user);
-        GeoQuery geoQuery = fire.queryAtLocation(new GeoLocation(lastLocation.getLatitude(), lastLocation.getLongitude()), 1);
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-            @Override
-            public void onKeyEntered(String key, GeoLocation location) {
-
-                Location targetLocation = new Location("");
-                targetLocation.setLatitude(location.latitude);
-                targetLocation.setLongitude(location.longitude);
-                float distance = lastLocation.distanceTo(targetLocation);
-                final String[] jarak = Float.toString(distance).split("\\.");
-                final LatLng latLng = new LatLng(location.latitude, location.longitude);
-
-                userInfo.child(key).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        markerOptions.position(latLng);
-                        markerOptions.title(dataSnapshot.child("nama").getValue() + "("
-                                + dataSnapshot.child("verification").getValue() + ")"
-                                + ". Jarak = " + jarak[0] + " Meter");
-                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                        currentLocationMarker = mMap.addMarker(markerOptions);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-
-            }
-
-            @Override
-            public void onKeyExited(String key) {
-                if(currentLocationMarker!=null)
-                    currentLocationMarker.remove();
-                mMap.clear();
-            }
-
-            @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-                currentLocationMarker.remove();
-                LatLng latLng = new LatLng(location.latitude, location.longitude);
-                markerOptions.position(latLng);
-                markerOptions.title(key);
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                currentLocationMarker = mMap.addMarker(markerOptions);
-            }
-
-            @Override
-            public void onGeoQueryReady() {
-
-            }
-
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-
-            }
-        });
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        googleApiClient.connect();
-    }
-
-    void requestHelp() {
-        GeoFire fire = new GeoFire(user);
-        fire.setLocation(userID, new GeoLocation(lastLocation.getLatitude(), lastLocation.getLongitude()),
-                new GeoFire.CompletionListener() {
-                    @Override
-                    public void onComplete(String key, DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "Help Requested", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
     private void cancellHelps() {
         if(statusRequest){
             GeoFire fire = new GeoFire(user);
@@ -410,28 +203,23 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(intentLogout);
     }
 
-    private void initPlayer() {
-        mPlayer = new MediaPlayer();
-        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        AssetFileDescriptor afd = getApplicationContext().getResources().openRawResourceFd(R.raw.alert2);
-        try {
-            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+    private void setCurrentUser() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View hView = navigationView.getHeaderView(0);
+        nav_nama = hView.findViewById(R.id.nav_header_nama);
+        TextView nav_email = hView.findViewById(R.id.nav_header_email);
+        userInfo.child(userID).child("nama").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onPrepared(MediaPlayer mp) {
-                isReady = true;
-                mPlayer.start();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                nav_nama.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        mPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                return false;
-            }
-        });
+        nav_email.setText(firebaseUser.getEmail());
     }
 
     private void hideSystemUI() {
