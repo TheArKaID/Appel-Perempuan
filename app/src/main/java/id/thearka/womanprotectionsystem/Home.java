@@ -59,8 +59,6 @@ public class Home extends Fragment implements OnMapReadyCallback,
         LocationListener {
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    private final static int MAX_VOLUME = 1000;
-    private final String TAG = MainActivity.class.getSimpleName();
     GoogleMap mMap;
     Location lastLocation;
     Marker currentLocationMarker;
@@ -73,26 +71,18 @@ public class Home extends Fragment implements OnMapReadyCallback,
     DatabaseReference userInfo;
     MarkerOptions markerOptions = new MarkerOptions();
     boolean statusRequest;
-    boolean logoutUser = false;
-    NavigationView navigationView;
     AudioManager mAudioManager;
-    TextView nav_nama;
     DrawerLayout drawer;
     View v;
-    MapView mapView;
     private MediaPlayer mPlayer = null;
     private boolean isReady;
+    private boolean firstMove = false;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.activity_home, container, false);
 
-//        mapView = v.findViewById(R.id.mapView);
-//        mapView.onCreate(savedInstanceState);
-//        mapView.getMapAsync(this);
-        SupportMapFragment mapFragment2 = (SupportMapFragment) this.getActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.fragmentmap);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.fragmentmap);
         if (mapFragment != null) {
@@ -114,6 +104,8 @@ public class Home extends Fragment implements OnMapReadyCallback,
         final int originalVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         statusRequest = false;
 
+        initPlayer();
+
         cvHelpRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,8 +113,7 @@ public class Home extends Fragment implements OnMapReadyCallback,
                     if (!statusRequest) {
                         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
                         mPlayer.prepareAsync();
-//                        requestHelp();
-                        mPlayer.start();
+                        requestHelp();
                         mPlayer.setLooping(true);
                         statusRequest = true;
                     } else {
@@ -130,7 +121,7 @@ public class Home extends Fragment implements OnMapReadyCallback,
                             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
                             mPlayer.stop();
                             isReady = false;
-//                            cancellHelps();
+                            cancellHelps();
                             statusRequest = false;
                         }
                     }
@@ -140,7 +131,6 @@ public class Home extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        initPlayer();
 
         return v;
     }
@@ -158,10 +148,6 @@ public class Home extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//        if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-//            return;
-//        }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this.getContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -220,7 +206,10 @@ public class Home extends Fragment implements OnMapReadyCallback,
 
         LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, mMap.getCameraPosition().zoom));
+        if(!firstMove) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, mMap.getCameraPosition().zoom));
+            firstMove = true;
+        }
 
         findHelplessPeople();
     }
