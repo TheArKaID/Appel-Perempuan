@@ -1,10 +1,14 @@
 package id.thearka.womanprotectionsystem;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,10 +23,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends Fragment {
 
+    View v;
     CircleImageView iv_closeup;
     ImageView iv_ktp;
     EditText et_nama, et_pass, et_repass, et_confirmpass;
@@ -33,21 +40,20 @@ public class SettingsActivity extends AppCompatActivity {
     DatabaseReference userInfo;
     AuthCredential userCredential;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        getSupportActionBar().hide();
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.activity_settings, container, false);
 
-        iv_closeup = findViewById(R.id.iv_closeUp);
-        iv_ktp = findViewById(R.id.iv_ktp);
-        et_nama = findViewById(R.id.et_nama);
-        et_pass = findViewById(R.id.et_password);
-        et_repass = findViewById(R.id.et_repassword);
-        et_confirmpass = findViewById(R.id.et_konfirmPass);
-        btn_simpan = findViewById(R.id.btn_simpan);
-        tv_infocloseup = findViewById(R.id.tv_infoCloseUp);
-        tv_infoktp = findViewById(R.id.tv_infoKtp);
+        iv_closeup = v.findViewById(R.id.iv_closeUp);
+        iv_ktp = v.findViewById(R.id.iv_ktp);
+        et_nama = v.findViewById(R.id.et_nama);
+        et_pass = v.findViewById(R.id.et_password);
+        et_repass = v.findViewById(R.id.et_repassword);
+        et_confirmpass = v.findViewById(R.id.et_konfirmPass);
+        btn_simpan = v.findViewById(R.id.btn_simpan);
+        tv_infocloseup = v.findViewById(R.id.tv_infoCloseUp);
+        tv_infoktp = v.findViewById(R.id.tv_infoKtp);
 
         user = FirebaseAuth.getInstance();
         userInfo = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -59,6 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        return v;
     }
 
     private void saveData() {
@@ -72,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         if(!TextUtils.isEmpty(confirmpass)) {
             if(TextUtils.isEmpty(nama)) {
-                Toast.makeText(this, "Nama tidak boleh kosong", Toast.LENGTH_LONG).show();
+                Toast.makeText(this.getContext(), "Nama tidak boleh kosong", Toast.LENGTH_LONG).show();
             } else {
                 if(!TextUtils.isEmpty(pass) && !TextUtils.isEmpty(repass)){
                     if(pass.equals(repass)){
@@ -83,15 +90,15 @@ public class SettingsActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){
                                             user.getCurrentUser().updatePassword(finalPass);
-                                            Toast.makeText(SettingsActivity.this, "Password Updated", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(SettingsActivity.this.getContext(), "Password Updated", Toast.LENGTH_LONG).show();
                                         } else{
-                                            Toast.makeText(SettingsActivity.this, task.getException().getMessage()!=null?task.getException().getMessage():"Gagal", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(SettingsActivity.this.getContext(), task.getException().getMessage()!=null?task.getException().getMessage():"Gagal", Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 }
                         );
                     }else {
-                        Toast.makeText(this, "Password baru tidak sama", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this.getContext(), "Password baru tidak sama", Toast.LENGTH_LONG).show();
                     }
                 }
                 final String finalNama = nama;
@@ -101,9 +108,9 @@ public class SettingsActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     userInfo.child(user.getCurrentUser().getUid()).child("nama").setValue(finalNama);
-                                    Toast.makeText(SettingsActivity.this, "Nama Updated", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SettingsActivity.this.getContext(), "Nama Updated", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(SettingsActivity.this, task.getException().getMessage()!=null?task.getException().getMessage():"Gagal", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SettingsActivity.this.getContext(), task.getException().getMessage()!=null?task.getException().getMessage():"Gagal", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -111,7 +118,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
         } else {
-            Toast.makeText(this, "Password saat ini tidak boleh kosong", Toast.LENGTH_LONG).show();
+            Toast.makeText(this.getContext(), "Password saat ini tidak boleh kosong", Toast.LENGTH_LONG).show();
         }
     }
 }

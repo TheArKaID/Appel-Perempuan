@@ -146,9 +146,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
         if (id == R.id.nav_home) {
-            // Handle the camera action
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentMain, new Home()).commit();
+            navigationView.setCheckedItem(R.id.nav_home);
         } else if (id == R.id.nav_setting) {
-            moveToSetting();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentMain, new SettingsActivity()).commit();
+            navigationView.setCheckedItem(R.id.nav_setting);
         } else if (id == R.id.nav_about) {
 
         } else if (id == R.id.nav_exit) {
