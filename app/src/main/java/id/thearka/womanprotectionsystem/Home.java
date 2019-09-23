@@ -2,28 +2,20 @@ package id.thearka.womanprotectionsystem;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -40,8 +32,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -55,12 +47,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
-import java.util.Objects;
 
-import static android.content.Context.MODE_PRIVATE;
-
-public class Home extends Fragment implements
-        OnMapReadyCallback,
+public class Home extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -84,21 +72,27 @@ public class Home extends Fragment implements
     NavigationView navigationView;
     AudioManager mAudioManager;
     TextView nav_nama;
-    private MediaPlayer mPlayer = null;
-    private boolean isReady;
     DrawerLayout drawer;
     View v;
+    MapView mapView;
+    private MediaPlayer mPlayer = null;
+    private boolean isReady;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.activity_home, container, false);
 
+        mapView = v.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
         hideSystemUI();
-//        firebaseUser = firebaseAuth.getCurrentUser();
-//        userID = firebaseUser != null ? firebaseUser.getUid() : null;
-//        user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
-//        userInfo = FirebaseDatabase.getInstance().getReference().child("Users");
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        userID = firebaseUser != null ? firebaseUser.getUid() : null;
+        user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
+        userInfo = FirebaseDatabase.getInstance().getReference().child("Users");
 
         CardView cvHelpRequest = v.findViewById(R.id.cvHelp);
 
@@ -134,15 +128,34 @@ public class Home extends Fragment implements
             }
         });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.fragmentmap);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
-
         initPlayer();
 
         return v;
+    }
+
+    //    @Override
+//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        SupportMapFragment mapFragment = (SupportMapFragment) this.getActivity().getSupportFragmentManager()
+//                .findFragmentById(R.id.fragmentmap);
+//        if (mapFragment != null) {
+//            mapFragment.getMapAsync(this);
+//        }
+//    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+            return;
+        }
+
+        mMap.setMyLocationEnabled(true);
+        LatLng latLng = new LatLng(-7.8086832, 110.3189663);
+
+        buildGoogleApiClient();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
     }
 
     @Override
@@ -184,21 +197,6 @@ public class Home extends Fragment implements
         findHelplessPeople();
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-            return;
-        }
-
-        mMap.setMyLocationEnabled(true);
-        LatLng latLng = new LatLng(-7.8086832, 110.3189663);
-
-        buildGoogleApiClient();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-    }
     private void findHelplessPeople() {
 
         GeoFire fire = new GeoFire(user);
@@ -236,7 +234,7 @@ public class Home extends Fragment implements
 
             @Override
             public void onKeyExited(String key) {
-                if(currentLocationMarker!=null)
+                if (currentLocationMarker != null)
                     currentLocationMarker.remove();
                 mMap.clear();
             }
@@ -264,7 +262,7 @@ public class Home extends Fragment implements
     }
 
     protected synchronized void buildGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this.getContext())
+        googleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
@@ -284,7 +282,7 @@ public class Home extends Fragment implements
     }
 
     private void cancellHelps() {
-        if(statusRequest){
+        if (statusRequest) {
             GeoFire fire = new GeoFire(user);
             fire.removeLocation(userID,
                     new GeoFire.CompletionListener() {
