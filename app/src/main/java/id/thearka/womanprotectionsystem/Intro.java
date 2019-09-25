@@ -29,6 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
+import id.thearka.womanprotectionsystem.Adapters.PagerAdapter;
+
 public class Intro extends AppCompatActivity {
 
     static final String TAG = "PagerActivity";

@@ -1,8 +1,10 @@
-package id.thearka.womanprotectionsystem;
+package id.thearka.womanprotectionsystem.Adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import id.thearka.womanprotectionsystem.PlaceholderFragment;
 
 public class PagerAdapter extends FragmentPagerAdapter {
 

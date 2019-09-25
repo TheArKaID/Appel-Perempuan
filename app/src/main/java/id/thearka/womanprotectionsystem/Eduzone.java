@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import id.thearka.womanprotectionsystem.Adapters.EduzoneAdapter;
+import id.thearka.womanprotectionsystem.Models.EduzoneModel;
+import id.thearka.womanprotectionsystem.Utils.MyWebView;
+
 public class Eduzone extends Fragment {
 
     private ArrayList<EduzoneModel> list;

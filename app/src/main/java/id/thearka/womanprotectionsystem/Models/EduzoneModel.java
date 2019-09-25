@@ -1,4 +1,4 @@
-package id.thearka.womanprotectionsystem;
+package id.thearka.womanprotectionsystem.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package id.thearka.womanprotectionsystem;
+package id.thearka.womanprotectionsystem.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -13,6 +13,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+
+import id.thearka.womanprotectionsystem.Models.EduzoneModel;
+import id.thearka.womanprotectionsystem.R;
 
 public class EduzoneAdapter extends RecyclerView.Adapter<EduzoneAdapter.ViewHolder>{
 
@@ -36,7 +39,7 @@ public class EduzoneAdapter extends RecyclerView.Adapter<EduzoneAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         EduzoneModel view = getListEduzone().get(i);
         String judul = view.getJudul();
-        judul = judul.substring(0, 30);
+        judul = judul.substring(0, 25);
         judul = judul+"...";
         viewHolder.tvJudul.setText(judul);
         Glide.with(context)

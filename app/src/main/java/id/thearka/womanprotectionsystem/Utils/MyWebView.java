@@ -1,9 +1,11 @@
-package id.thearka.womanprotectionsystem;
+package id.thearka.womanprotectionsystem.Utils;
 
 import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.webkit.WebView;
+
+import id.thearka.womanprotectionsystem.R;
 
 public class MyWebView extends AppCompatActivity {
 
