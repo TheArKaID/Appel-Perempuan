@@ -1,6 +1,7 @@
 package id.thearka.womanprotectionsystem;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -57,7 +58,9 @@ public class Eduzone extends Fragment {
     }
 
     private void letWebView(String url) {
-        String urlWebView = url;
+        Intent intent = new Intent(getContext(), MyWebView.class);
+        intent.putExtra("url", url);
+        startActivity(intent);
     }
 
     private void showRecyclerList() {
