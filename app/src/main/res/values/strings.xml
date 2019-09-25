@@ -47,4 +47,5 @@
     <string name="news_information"><![CDATA[News & Information]]></string>
     <string name="eduzone">Eduzone</string>
     <string name="report">Report</string>
+    <string name="news_images_desc">News Images</string>
 </resources>

@@ -17,9 +17,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Womans"/>
+
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/row_eduzone"/>
     </LinearLayout>
 
     <LinearLayout
@@ -34,7 +38,10 @@
             android:text="Kids"/>
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/row_eduzone"/>
     </LinearLayout>
 
     <LinearLayout
@@ -49,7 +56,10 @@
             android:text="Humanization"/>
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/row_eduzone"/>
     </LinearLayout>
 
 </LinearLayout>
