@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import id.thearka.womanprotectionsystem.Models.EduzoneModel;
 
-public class EduzoneData {
+public class EduzoneWomanData {
     public static String[][] data = new String[][]{
             {"Pernyataan Sikap Komnas Perempuan terhadap Rencana Pengesahan Rancangan Undang-Undang Kitab Undang-Undang Hukum Pidana (RUU KUHP) “Tunda Pengesahan: (Jakarta, 20 September 2019)", "https://www.komnasperempuan.go.id/file/post_image/Lky3ws_post_Image%20Siaran%20Pers.JPG", "https://www.komnasperempuan.go.id/read-news-pernyataan-sikap-komnas-perempuan-terhadap-rencana-pengesahan-rancangan-undang-undang-kitab-undang-undang-hukum-pidana-ruu-kuhp-tunda-pengesahan-jakarta-20-september-2019"},
             {"Siaran Pers Komnas Perempuan “Stop Penyiksaan, Tegakkan Keadilan, Tangguhkan Penahanan Ibu Hamil” (11 September 2019)", "https://www.komnasperempuan.go.id/file/post_image/NSakeN_post_Image%20Siaran%20Pers.JPG", "https://www.komnasperempuan.go.id/read-news-siaran-pers-komnas-perempuan-stop-penyiksaan-tegakkan-keadilan-tangguhkan-penahanan-ibu-hamil-11-september-2019"},

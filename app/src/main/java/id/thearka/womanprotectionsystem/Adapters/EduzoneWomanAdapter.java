@@ -17,12 +17,12 @@ import java.util.ArrayList;
 import id.thearka.womanprotectionsystem.Models.EduzoneModel;
 import id.thearka.womanprotectionsystem.R;
 
-public class EduzoneAdapter extends RecyclerView.Adapter<EduzoneAdapter.ViewHolder>{
+public class EduzoneWomanAdapter extends RecyclerView.Adapter<EduzoneWomanAdapter.ViewHolder>{
 
     private Context context;
     private ArrayList<EduzoneModel> listEduzone;
 
-    public EduzoneAdapter(Context context) {
+    public EduzoneWomanAdapter(Context context) {
         this.context = context;
     }
 
@@ -64,7 +64,6 @@ public class EduzoneAdapter extends RecyclerView.Adapter<EduzoneAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvJudul;
         ImageView tvImage;
-        String url;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvJudul = itemView.findViewById(R.id.tvNewsTitle);

@@ -14,16 +14,20 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import id.thearka.womanprotectionsystem.Adapters.EduzoneAdapter;
+import id.thearka.womanprotectionsystem.Adapters.EduzoneWomanAdapter;
 import id.thearka.womanprotectionsystem.Models.EduzoneModel;
 import id.thearka.womanprotectionsystem.Utils.MyWebView;
 
 public class Eduzone extends Fragment {
 
-    private ArrayList<EduzoneModel> list;
+    private ArrayList<EduzoneModel> listWoman;
+    private ArrayList<EduzoneModel> listKid;
+    private ArrayList<EduzoneModel> listHuman;
     private Context context;
 
     private RecyclerView rvWomanEduzone;
+    private RecyclerView rvKidEduzone;
+    private RecyclerView rvHumanEduzone;
 
     @Nullable
     @Override
@@ -32,21 +36,25 @@ public class Eduzone extends Fragment {
         context = v.getContext();
 
         rvWomanEduzone = v.findViewById(R.id.rvWomansEduzone);
-        rvWomanEduzone.setHasFixedSize(true);
-        list = new ArrayList<>();
+        rvHumanEduzone = v.findViewById(R.id.rvHumanEduzone);
+        rvKidEduzone = v.findViewById(R.id.rvKidsEduzone);
 
-//        if(savedInstanceState == null){
-        list.addAll(EduzoneData.getListData());
-        showRecyclerList();
-//            mode = R.id.action_list;
-//        } else{
-//            String setTitle = savedInstanceState.getString(STATE_TITLE);
-//            ArrayList<President> stateList = savedInstanceState.getParcelableArrayList(STATE_LIST);
-//            int stateMode = savedInstanceState.getInt(STATE_MODE);
-//            setActionBarTitle(setTitle);
-//            list.addAll(stateList);
-//            setMode(stateMode);
-//        }
+        rvWomanEduzone.setHasFixedSize(true);
+        rvHumanEduzone.setHasFixedSize(true);
+        rvKidEduzone.setHasFixedSize(true);
+
+        listWoman = new ArrayList<>();
+        listHuman = new ArrayList<>();
+        listKid = new ArrayList<>();
+
+        listWoman.addAll(EduzoneWomanData.getListData());
+        recyclerWoman();
+
+        listKid.addAll(EduzoneKidData.getListData());
+        recyclerKid();
+
+        listHuman.addAll(EduzoneHumanData.getListData());
+        recyclerHuman();
 
         return v;
     }
@@ -56,7 +64,21 @@ public class Eduzone extends Fragment {
         ItemClickSupport.addTo(rvWomanEduzone).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemCLicked(RecyclerView mRecyclerView, int adapterPosition, View v) {
-                letWebView(list.get(adapterPosition).getUrl());
+                letWebView(listWoman.get(adapterPosition).getUrl());
+            }
+        });
+
+        ItemClickSupport.addTo(rvKidEduzone).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemCLicked(RecyclerView mRecyclerView, int adapterPosition, View v) {
+                letWebView(listKid.get(adapterPosition).getUrl());
+            }
+        });
+
+        ItemClickSupport.addTo(rvHumanEduzone).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemCLicked(RecyclerView mRecyclerView, int adapterPosition, View v) {
+                letWebView(listHuman.get(adapterPosition).getUrl());
             }
         });
     }
@@ -67,13 +89,30 @@ public class Eduzone extends Fragment {
         startActivity(intent);
     }
 
-    private void showRecyclerList() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        ((LinearLayoutManager) layoutManager).setOrientation(LinearLayoutManager.HORIZONTAL);
+    private void recyclerWoman() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvWomanEduzone.setLayoutManager(layoutManager);
-        EduzoneAdapter eduzoneAdapter = new EduzoneAdapter(context);
-        eduzoneAdapter.setListEduzone(list);
+        EduzoneWomanAdapter eduzoneAdapter = new EduzoneWomanAdapter(context);
+        eduzoneAdapter.setListEduzone(listWoman);
         rvWomanEduzone.setAdapter(eduzoneAdapter);
+    }
 
+    private void recyclerKid() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rvKidEduzone.setLayoutManager(layoutManager);
+        EduzoneWomanAdapter eduzoneAdapter = new EduzoneWomanAdapter(context);
+        eduzoneAdapter.setListEduzone(listKid);
+        rvKidEduzone.setAdapter(eduzoneAdapter);
+    }
+
+    private void recyclerHuman() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rvHumanEduzone.setLayoutManager(layoutManager);
+        EduzoneWomanAdapter eduzoneAdapter = new EduzoneWomanAdapter(context);
+        eduzoneAdapter.setListEduzone(listHuman);
+        rvHumanEduzone.setAdapter(eduzoneAdapter);
     }
 }

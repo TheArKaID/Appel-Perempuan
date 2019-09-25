@@ -44,6 +44,7 @@
             android:textSize="20sp"
             android:text="@string/kids"/>
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvKidsEduzone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
@@ -65,6 +66,7 @@
             android:textSize="20sp"
             android:text="@string/humanization"/>
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvHumanEduzone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
