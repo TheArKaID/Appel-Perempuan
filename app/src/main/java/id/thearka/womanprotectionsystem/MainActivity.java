@@ -156,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_edu) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentMain, new Eduzone()).commit();
             navigationView.setCheckedItem(R.id.nav_edu);
+        } else if (id == R.id.nav_news) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentMain, new NewsInformation()).commit();
+            navigationView.setCheckedItem(R.id.nav_news);
         } else if (id == R.id.nav_exit) {
             confirmOut("Keluar", "Anda akan keluar tanpa Log Out");
         } else if (id == R.id.nav_logout) {
