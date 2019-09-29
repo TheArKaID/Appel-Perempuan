@@ -15,9 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="News and Information">
-
-    </android.support.v7.widget.Toolbar>
+        app:title="News and Information"/>
 
     <EditText
         android:id="@+id/etCreateStatus"
