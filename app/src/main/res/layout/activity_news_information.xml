@@ -34,12 +34,19 @@
         app:layout_constraintTop_toBottomOf="@+id/etCreateStatus"
         android:orientation="horizontal"/>
 
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/lineBreak1"
-        tools:listitem="@layout/row_news">
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lineBreak1">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvNews"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@+id/lineBreak1"
+            tools:listitem="@layout/row_news"/>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

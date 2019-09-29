@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import id.thearka.womanprotectionsystem.Adapters.EduzoneWomanAdapter;
+import id.thearka.womanprotectionsystem.Adapters.EduzoneAdapter;
 import id.thearka.womanprotectionsystem.Models.EduzoneModel;
 import id.thearka.womanprotectionsystem.Utils.MyWebView;
 
@@ -93,7 +93,7 @@ public class Eduzone extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvWomanEduzone.setLayoutManager(layoutManager);
-        EduzoneWomanAdapter eduzoneAdapter = new EduzoneWomanAdapter(context);
+        EduzoneAdapter eduzoneAdapter = new EduzoneAdapter(context);
         eduzoneAdapter.setListEduzone(listWoman);
         rvWomanEduzone.setAdapter(eduzoneAdapter);
     }
@@ -102,7 +102,7 @@ public class Eduzone extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvKidEduzone.setLayoutManager(layoutManager);
-        EduzoneWomanAdapter eduzoneAdapter = new EduzoneWomanAdapter(context);
+        EduzoneAdapter eduzoneAdapter = new EduzoneAdapter(context);
         eduzoneAdapter.setListEduzone(listKid);
         rvKidEduzone.setAdapter(eduzoneAdapter);
     }
@@ -111,7 +111,7 @@ public class Eduzone extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvHumanEduzone.setLayoutManager(layoutManager);
-        EduzoneWomanAdapter eduzoneAdapter = new EduzoneWomanAdapter(context);
+        EduzoneAdapter eduzoneAdapter = new EduzoneAdapter(context);
         eduzoneAdapter.setListEduzone(listHuman);
         rvHumanEduzone.setAdapter(eduzoneAdapter);
     }

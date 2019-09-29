@@ -17,12 +17,12 @@ import java.util.ArrayList;
 import id.thearka.womanprotectionsystem.Models.EduzoneModel;
 import id.thearka.womanprotectionsystem.R;
 
-public class EduzoneWomanAdapter extends RecyclerView.Adapter<EduzoneWomanAdapter.ViewHolder>{
+public class EduzoneAdapter extends RecyclerView.Adapter<EduzoneAdapter.ViewHolder>{
 
     private Context context;
     private ArrayList<EduzoneModel> listEduzone;
 
-    public EduzoneWomanAdapter(Context context) {
+    public EduzoneAdapter(Context context) {
         this.context = context;
     }
 
