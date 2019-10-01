@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_setting) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentMain, new SettingsActivity()).commit();
             navigationView.setCheckedItem(R.id.nav_setting);
-        } else if (id == R.id.nav_about) {
+//        } else if (id == R.id.nav_about) {
 
         } else if (id == R.id.nav_edu) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentMain, new Eduzone()).commit();

@@ -20,8 +20,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -52,11 +55,22 @@ public class SettingsActivity extends Fragment {
         et_repass = v.findViewById(R.id.et_repassword);
         et_confirmpass = v.findViewById(R.id.et_konfirmPass);
         btn_simpan = v.findViewById(R.id.btn_simpan);
-        tv_infocloseup = v.findViewById(R.id.tv_infoCloseUp);
-        tv_infoktp = v.findViewById(R.id.tv_infoKtp);
 
         user = FirebaseAuth.getInstance();
         userInfo = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        userInfo.child(user.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                et_nama.setText(dataSnapshot.child("nama").getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         btn_simpan.setOnClickListener(new View.OnClickListener() {
             @Override

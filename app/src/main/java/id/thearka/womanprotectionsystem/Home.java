@@ -69,6 +69,7 @@ public class Home extends Fragment implements OnMapReadyCallback,
     String userID;
     DatabaseReference user;
     DatabaseReference userInfo;
+    DatabaseReference reportRequest;
     MarkerOptions markerOptions = new MarkerOptions();
     boolean statusRequest;
     AudioManager mAudioManager;
@@ -95,6 +96,7 @@ public class Home extends Fragment implements OnMapReadyCallback,
         userID = firebaseUser != null ? firebaseUser.getUid() : null;
         user = FirebaseDatabase.getInstance().getReference().child("userHelpless");
         userInfo = FirebaseDatabase.getInstance().getReference().child("Users");
+        reportRequest = FirebaseDatabase.getInstance().getReference().child("Reported");
 
         CardView cvHelpRequest = v.findViewById(R.id.cvHelp);
 
@@ -324,6 +326,19 @@ public class Home extends Fragment implements OnMapReadyCallback,
                 new GeoFire.CompletionListener() {
                     @Override
                     public void onComplete(String key, DatabaseError error) {
+                        userInfo.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("nama").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                reportRequest.child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"-"+System.currentTimeMillis()).setValue(dataSnapshot.getValue());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+//                        reportRequest.child(String.valueOf(System.currentTimeMillis())).setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         Toast.makeText(Home.this.getActivity(), "Help Requested", Toast.LENGTH_SHORT).show();
                     }
                 });
